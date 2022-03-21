@@ -47,7 +47,6 @@ jobs:
         run: |-
           echo "Start training"
           pip install scikit-learn
-          pip install pickle
           
           python train.py
 

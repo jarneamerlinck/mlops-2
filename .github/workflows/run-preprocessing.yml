@@ -1,0 +1,46 @@
+# This is a basic workflow- that will run a chained pipeline
+name: run-pipeline
+
+# Run the workflow if new data is pushed to our /raw folder
+on:
+  push:
+    branches:    
+    - 'main'
+    paths:
+      - 'data/raw/**.csv'
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "pipeline"
+  pipeline:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    steps: 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Run python preprocessing script
+      # For now we can do everything within our workflow file and we won't have to write a custom 'action'.
+      # On the right hand side you should see a 'Marketplace' where you can use and explore custom actions that other users have written.
+      - name: preprocess-step
+        # The 'run' command is used to write a 'mini-action' within a workflow file itself.
+        # If we want to use our own custom actions, or other users' actions, we need to use the 'uses' command instead.
+        # Either the 'run' or 'uses' command need to always be present in each workflow step
+        run: |
+          echo "Running preprocessing pipeline"
+          pip install pandas
+          pip install numpy
+          python preprocessing.py
+    # Our workflow runs in its separate environment. We need to commit and push our changes to our repo to see them happening there as well.
+      - name: Commit and push
+        run: |-
+          git config user.name "Automated"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Update preprocessed data: ${timestamp}" || exit 0
+          git push
+
+  

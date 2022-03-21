@@ -1,11 +1,12 @@
 # This is a basic workflow- that will run a chained pipeline
-name: run-pipeline
+name: run-preprocessing
 
 # Run the workflow if new data is pushed to our /raw folder
 on:
   push:
     branches:    
     - 'main'
+    - 'issue-1'
     paths:
       - 'data/raw/**.csv'
   workflow_dispatch:
@@ -42,5 +43,9 @@ jobs:
           timestamp=$(date -u)
           git commit -m "Update preprocessed data: ${timestamp}" || exit 0
           git push
+        - name: Train
+          run: |-
+          echo "Start training"
+
 
   

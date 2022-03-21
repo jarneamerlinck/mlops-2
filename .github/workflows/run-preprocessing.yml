@@ -6,7 +6,7 @@ on:
   push:
     branches:    
     - 'main'
-    - 'issue-1'
+    - 'issue-*'
     paths:
       - 'data/raw/**.csv'
   workflow_dispatch:
@@ -46,6 +46,10 @@ jobs:
       - name: Train
         run: |-
           echo "Start training"
+          pip install scikit-learn
+          pip install pickle
+          
+          python train.py
 
 
   
